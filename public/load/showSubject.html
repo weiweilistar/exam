@@ -135,10 +135,18 @@
     // 封装一个方法showData()
     function showData(data){
       // console.log(data);
-      $(".Catalog_rightnei")
-      data.forEach()
-      
+      $(".Catalogtitle").find("em").html(data.length);
+      $(".Catalog_rightnei:not(:hidden)").remove();
 
+      data.forEach(function(item,index){
+        var div=$(".Catalog_rightnei:hidden").clone();
+        div.removeAttr("hidden");
+        $(".Catalog_right").append(div);
+        // div.find(".Catalogtitwo").html("题号:&nbsp;&nbsp;题型:"+item.subjectType.realName+"&nbsp;&nbsp;难度:"+item.subjectLevel.realName+"&nbsp;&nbsp;上传人:"+item.user+"&nbsp;&nbsp;来源:"+null+"&nbsp;&nbsp;上传时间:"+item.uploadTime+"&nbsp;&nbsp;组卷次数:<em>0</em>");//
+         var stemOne=$("<p>"+item.stem+"</p>");
+        div.find(".Catalogcontentup").append(stemOne);
+      });
+  
     }
 
     $(".tablea").off();
