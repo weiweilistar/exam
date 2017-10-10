@@ -1,0 +1,195 @@
+ <div class="editingarea">
+  <div class="c_flex">
+    <span class="c_flexible"></span>
+  </div>
+  <div class="c_editview">
+   <div class="c_condition">
+       <span><select><option>题干</option></select></span>
+       <span class="pl5 " ><input type="text"></span>
+       <span class="pl15 pr15 btn_gray ">查找</span>
+       <span class="icon_lead-in"><em class="icon_r">批量导入题目</em></span>
+       <span class="icon_add"><em class="icon_r">单个添加题目</em></span>
+    </div>
+    <div class="divtable">
+        <table width="100%" border="0" cellspacing="0" cellpadding="0" class="tablea">
+            <tr hidden>
+                <td align="center">年份</td>
+                <td align="left">
+                    <div class="chose">
+                      <a href="#" class="active3">全部</a>
+                      <a href="#">语文</a>
+                      <a href="#">数学</a>
+                      <a href="#">英语</a>
+                      <a href="#">政治</a>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+      <div class="Catalog">
+           <div class="Catalog_right">
+               <div class="Catalogtitle">
+                  总计<em>15552</em>道题&nbsp;&nbsp;
+                  提示：单击体面可显示答案和解析&nbsp;&nbsp;
+                  <input type="checkbox" />
+                  <b>显示答案和解析</b>&nbsp;&nbsp;
+                  <a href="#" class="Thispage">本页全部试题加入试卷</a>
+                  <div>
+                    <i>1</i>
+                    <a href="#" class="pageone">前</a>
+                    <a href="#" class="pagetwo">后</a>
+                  </div>
+                </div>
+               <div class="Catalog_rightnei" hidden="hidden">
+                    <div class="Catalogtitwo">题号：25544&nbsp;&nbsp;题型：还是得&nbsp;&nbsp;难度：订餐&nbsp;&nbsp;上传人：女性司机&nbsp;&nbsp;来源：才能使得&nbsp;&nbsp;上传时间:220255&nbsp;&nbsp;组卷次数：<em>0</em></div>
+                    <div class="Catalogcontent">
+                        <div class="Catalogcontentup">题型</div>
+                        <div class="Catalogcontentdown">
+                          <a href="#">审核通过</a>
+                          <a href="#">审核不通过</a>
+                          <a href="#">删除题目</a></div>
+                    </div>
+               </div>
+               <!-- <div class="Catalog_rightnei" hidden="hidden">
+                    <div class="Catalogtitwo">题号：25544&nbsp;&nbsp;题型：还是得&nbsp;&nbsp;难度：订餐&nbsp;&nbsp;上传人：女性司机&nbsp;&nbsp;来源：才能使得&nbsp;&nbsp;上传时间:220255&nbsp;&nbsp;组卷次数：<em>0</em></div>
+                    <div class="Catalogcontent">
+                      <div class="Catalogcontentup">题型</div>
+                      <div class="Catalogcontentdown">
+                        <a href="#">加入试卷</a>
+                      </div>
+                    </div>
+               </div> -->
+           </div>
+           <div class="clear"></div>
+      </div>
+    </div>
+</div>
+<script>
+  $(function(){
+      $.getJSON("exam/manager/getAllSubjectType",function(data){
+      // console.log(data);
+      var tr=$(".tablea tr:hidden").clone();
+      tr.removeAttr("hidden");
+      tr.children('td').eq(0).html("类型");
+      tr.find(".chose").html("");
+      data.forEach(function(item,index){
+        if(index==0){
+          var a=$("<a href='javascript:void(0)' class='active3' id="+item.id+">"+item.realName+"</a>");
+        }else{
+          var a=$("<a href='javascript:void(0)' id="+item.id+">"+item.realName+"</a>");
+        }
+        tr.find(".chose").append(a);
+      });
+       $(".tablea").append(tr);
+    });
+      $.getJSON("exam/manager/getSubjectLevel",function(data){
+      //console.log(data);
+      var tr=$(".tablea tr:hidden").clone();
+      tr.removeAttr("hidden");
+      tr.children('td').eq(0).html("难度");
+      tr.find(".chose").html("");
+      data.forEach(function(item,index){
+        if(index==0){
+          var a=$("<a href='javascript:void(0)' class='active3' id="+item.id+">"+item.realName+"</a>");
+        }else{
+          var a=$("<a href='javascript:void(0)' id="+item.id+">"+item.realName+"</a>");
+        }
+        tr.find(".chose").append(a);
+      });
+       $(".tablea").append(tr);
+    });
+      $.getJSON("exam/manager/getAllDepartmentes",function(data){
+      //console.log(data);
+      var tr=$(".tablea tr:hidden").clone();
+      tr.removeAttr("hidden");
+      tr.children('td').eq(0).html("方向");
+      tr.find(".chose").html("");
+      data.forEach(function(item,index){
+        if(index==0){
+          var a=$("<a href='javascript:void(0)' class='active3' id="+item.id+">"+item.name+"</a>");
+        }else{
+          var a=$("<a href='javascript:void(0)' id="+item.id+">"+item.name+"</a>");
+        }
+        tr.find(".chose").append(a);
+      });
+       $(".tablea").append(tr);
+    });
+      $.getJSON("exam/manager/getAllTopics",function(data){
+      //console.log(data);
+      var tr=$(".tablea tr:hidden").clone();
+      tr.removeAttr("hidden");
+      tr.children('td').eq(0).html("知识点");
+      tr.find(".chose").html("");
+      data.forEach(function(item,index){
+
+        if(index==0){
+          var a=$("<a href='javascript:void(0)' id="+item.id+" class='active3'>"+item.title+"</a>");
+        }else{
+          var a=$("<a href='javascript:void(0)' id="+item.id+">"+item.title+"</a>");
+        }
+        tr.find(".chose").append(a);
+      });
+       $(".tablea").append(tr);
+    });
+
+    // 封装一个方法showData()
+    function showData(data){
+      // console.log(data);
+      $(".Catalog_rightnei")
+      data.forEach()
+      
+
+    }
+
+    $(".tablea").off();
+    $(".tablea").on('click','a',function(event){
+      $(this).addClass("active3").siblings().removeClass("active3");
+      var arr = $('.tablea a').filter(':visible').map(function(index,item){
+        if($(item).hasClass('active3')){
+          return item;
+        }
+      }).get();//用于将类数组转化为数组
+      //console.log(arr);
+      var direct="";
+      var level="";
+      var type="";
+      var topic="";
+      arr.forEach(function(item,index){
+
+        switch(index){
+          case 0:direct=$(item).attr("id");
+            break;
+          case 1:level=$(item).attr("id");
+            break;
+          case 2:type=$(item).attr("id");
+            break;
+          case 3:topic=$(item).attr("id");
+            break;
+        }
+      });
+      //将选中四个题目的ｉｄ发送给后台
+      $.ajax("exam/manager/getDepartmentTopics",{
+         data:{
+          'direct':direct,
+          'level':level,
+          'type':type,
+          'topic':topic
+         },
+         'content-Type':'application/json',
+         method:"POST",
+         success:function(data){
+          //console.log(data);
+          showData(data);
+         }
+      });
+
+    });
+
+
+
+    
+
+  })
+</script>
+
+
