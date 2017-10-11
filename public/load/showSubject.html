@@ -47,10 +47,13 @@
                         <div class="Catalogcontentdown">
                           <a href="#">审核通过</a>
                           <a href="#">审核不通过</a>
-                          <a href="#">删除题目</a></div>
+                          <a href="#">删除题目</a>
+                          <a href="#">加入试卷</a>
+                        </div>
+
                     </div>
                </div>
-               <!-- <div class="Catalog_rightnei" hidden="hidden">
+              <!--  <div class="Catalog_rightnei" hidden="hidden">
                     <div class="Catalogtitwo">题号：25544&nbsp;&nbsp;题型：还是得&nbsp;&nbsp;难度：订餐&nbsp;&nbsp;上传人：女性司机&nbsp;&nbsp;来源：才能使得&nbsp;&nbsp;上传时间:220255&nbsp;&nbsp;组卷次数：<em>0</em></div>
                     <div class="Catalogcontent">
                       <div class="Catalogcontentup">题型</div>
@@ -136,19 +139,98 @@
     function showData(data){
       // console.log(data);
       $(".Catalogtitle").find("em").html(data.length);
-      $(".Catalog_rightnei:not(:hidden)").remove();
 
+      $(".Catalog_rightnei:not(:hidden)").remove();
+      //点击显示题干
       data.forEach(function(item,index){
         var div=$(".Catalog_rightnei:hidden").clone();
         div.removeAttr("hidden");
+        
         $(".Catalog_right").append(div);
         // div.find(".Catalogtitwo").html("题号:&nbsp;&nbsp;题型:"+item.subjectType.realName+"&nbsp;&nbsp;难度:"+item.subjectLevel.realName+"&nbsp;&nbsp;上传人:"+item.user+"&nbsp;&nbsp;来源:"+null+"&nbsp;&nbsp;上传时间:"+item.uploadTime+"&nbsp;&nbsp;组卷次数:<em>0</em>");//
-         var stemOne=$("<p>"+item.stem+"</p>");
+        var stemOne=$("<p>"+item.stem+"</p>");
+        div.find('.Catalogcontentdown a').attr('id',item.id);
         div.find(".Catalogcontentup").append(stemOne);
+        //alert(item.id);题目的ｉｄ
+        //显示选项
+        $.getJSON("/exam/manager/showOptions?subject_id="+item.id,function(data){
+          data.forEach(function(item,index){
+            //alert(item.correct.data)
+            var p;
+            /*console.log(item)
+              Object { id: 9, content: "标记性  编译执行 强类型 先执行函数", correct: Object, subject_id: 3 }
+            */
+            switch(index){
+              case 0:
+                var p='<p class="'+item.correct.data[0]+'" >A:'+item.content+'</p>';
+                break;
+              case 1:
+                var p='<p class="'+item.correct.data[0]+'">B:'+item.content+'</p>';
+                break;
+              case 2:
+                var p='<p class="'+item.correct.data[0]+'">C:'+item.content+'</p>';
+                break;
+              case 3:
+                var p='<p class="'+item.correct.data[0]+'">D:'+item.content+'</p>';
+                break;
+              default:
+                console.log("error");
+                break;
+            }
+            div.find(".Catalogcontentup").append(p);
+            $(".Catalogcontentup p.1").attr('style','color:red');
+          });
+        });
       });
-  
     }
 
+    function check(){
+      $(".Catalogcontentdown").off();
+      $(".Catalogcontentdown").on("click","a",function(){
+      //alert($(this).attr("id"));
+      switch($(this).html()){
+        case "审核通过":
+          $.ajax('http://localhost:3000/exam/manager/checkSubject',{
+            'data':{
+              id:$(this).attr("id"),
+              value:"审核"
+            },
+            'content-Type':'application/json',
+            'method':'POST',
+            success:function(){
+              alert('审核通过');
+            }
+          });
+          break;
+        case "审核不通过":
+          $.ajax('http://localhost:3000/exam/manager/checkSubject',{
+            'data':{
+              id:$(this).attr("id"),
+              value:"不通过"
+            },
+            'content-Type':'application/json',
+            'method':'POST',
+            success:function(){
+              alert('审核不通过');
+            }
+          });
+          break;
+        case "删除题目":
+          $.ajax('',{
+            'data':{
+
+            },
+            'conntent-Type':'application/json',
+            'method':'',
+            success:function(){
+              alert('删除成功');
+            }
+          })
+      }
+    })
+    }
+
+    //向后台请求题目，显示在前端
     $(".tablea").off();
     $(".tablea").on('click','a',function(event){
       $(this).addClass("active3").siblings().removeClass("active3");
@@ -188,14 +270,13 @@
          success:function(data){
           //console.log(data);
           showData(data);
+          check();
          }
       });
 
     });
 
-
-
-    
+ 
 
   })
 </script>

@@ -24,5 +24,13 @@ module.exports={
 		+sid+" and topic_id="
 		+tid;
 		return pool.execute(sql);
+	},
+	checkSubject(id,value){
+		var sql='update tbl_exam_subject set checkState="'+value+'" where id='+id;
+		return pool.execute(sql);
+	},
+	showOptions(id){
+		var sql="select * from tbl_exam_choice where subject_id="+id;
+		return pool.execute(sql);
 	}
 }
