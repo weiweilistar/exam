@@ -1,0 +1,261 @@
+<style>
+	.Attributecontent_left select{width:100px}
+	textarea,input{font-size:12px;}
+	.Answerpart_right textarea,.Problemcontent textarea{width:90%;height:70%;border:none;padding:10px;}
+	.chapterAnswer{ display:none}
+</style>
+		<!--题目添加-->
+<div class="editingarea">
+    <form action="" method="post" name="subjectAddForm">
+        <div class="c_flex"><span class="c_flexible"></span></div>
+        <div class="chosetitle"><a href="#" class="deletetitle">删除</a></div>
+        
+    	<div class="c_editview">
+        	<div class="Attribute">
+                 <div class="Attributetit">题目属性</div>
+                 <div class="Attributecontent">
+                     <div class="Attributecontent_left">
+                         <b>
+                         	题型：<select name="type">
+                                
+                           	</select>
+                         </b>
+                         <b>
+                         	方向：<select name="department">
+                         		
+                           	</select>
+                         </b>
+                         <b>
+                         	难度：<select name="level">
+                         		
+                           	</select>
+                         </b>
+                         <b>
+                         	知识点：<select name="topic">
+                            </select>
+                         </b> 
+                     </div>              
+                 </div>
+            </div>
+            <div class="Problem">
+                <div class="Attributetit">题目题干</div>
+                <div>
+                    <textarea name="stem" cols="80" rows="4"></textarea>                              
+                </div>
+            </div>
+            <div class="Answeroptions">
+                <div class="Attributetit">答案选项<em>(通过勾选每个选项下面的框可以设置正确答案)</em></div>
+                <div class="c_condition"><span class="icon_add">
+                	<em class="icon_r" style="float: left">添加选项</em></span>
+                </div>
+                <div class="Answercontent">
+                	<!--选项-->
+                    <div class="Answerpart">
+                         <div class="Answerpart_left">
+                             <p>A</p><span>
+                             <input type="radio" name="answer"/></span>
+                         </div>
+                         <div class="Answerpart_right">
+                         	<textarea name="choiceContent"></textarea>   
+                         </div>
+                         <div class="clear"></div>
+                    </div>
+                    <div class="Answerpart">
+                        <div class="Answerpart_left">
+                            <p>B</p><span>
+                            <input type="radio" name="answer"/>
+                            </span>
+                        </div>
+                        <div class="Answerpart_right">
+                        	<textarea name="choiceContent"></textarea>  
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+                    <div class="Answerpart">
+                        <div class="Answerpart_left">
+                            <p>C</p><span>
+                            <input type="radio" name="answer"/>
+                            </span>
+                        </div>
+                        <div class="Answerpart_right">
+                        	<textarea name="choiceContent"></textarea>  
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+                    <div class="Answerpart">
+                        <div class="Answerpart_left">
+                            <p>D</p><span>
+                            <input type="radio" name="answer"/>
+                            </span>
+                        </div>
+                        <div class="Answerpart_right">
+                        	<textarea name="choiceContent"></textarea>  
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+            </div>
+            <div class="Problem chapterAnswer">
+                <div class="Attributetit">答案</div>
+                <div class="Problemcontent">
+                	<textarea name="answer"></textarea> 
+                </div>
+            </div>
+            
+            <div class="Problem">
+                <div class="Attributetit">答案解析</div>
+                <div class="Problemcontent">
+                	<textarea name="analysis"></textarea> 
+                </div>
+            </div>
+            <!--
+            <div class="Problem">
+                <div class="fistproblm"><span>1.</span><a href="#"></a></div>
+                <div class="Problemcontent"></div>
+            </div>
+            -->
+            <div class="btn_left">
+                <span class="btnL"><em class="btnR saveContinue">保存并继续</em></span>
+                <span class="btnL"><em class="btnR saveClose">保存并关闭</em></span>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script type="text/javascript">
+    $(function(){
+        //拿题型
+        $.getJSON('exam/manager/getAllSubjectType',function(data){
+            $("select:eq(0)").empty();
+            data.forEach(function(item){
+                var opt=$('<option value="'+item['id']+'" id='+item.id+' name='+item['name']+'>'+item['realName']+'</option>');
+                $("select:eq(0)").append(opt);
+            })
+        });
+        //拿方向
+        $.getJSON('exam/manager/getAllDepartmentes',function(data){
+            $("select:eq(1)").empty();
+            data.forEach(function(item){
+                var opt=$('<option value="'+item['id']+'" name='+item['name']+' id='+item['id']+'>'+item['name']+'</option>');
+                $("select:eq(1)").append(opt);
+            });
+        });
+        //拿难度
+        $.getJSON('exam/manager/getSubjectLevel',function(data){
+            $("select:eq(2)").empty()
+            data.forEach(function(item){
+                var opt=$('<option value="'+item['id']+'" id='+item['id']+' name='+item['name']+'>'+item['realName']+'</option>');
+                $("select:eq(2)").append(opt);
+            });
+        });
+        //拿知识点
+        $.getJSON('exam/manager/getAllTopics',function(data){
+            $("select:eq(3)").empty();
+            data.forEach(function(item){
+                var opt=$('<option value="'+item['id']+'" name='+item['name']+' id='+item['id']+'>'+item['title']+'</option>');
+                $("select:eq(3)").append(opt);
+            });
+        });
+
+        $('.Attributecontent_left select[class = type]').off('change');
+        $('.Attributecontent_left select[class = type]').on('change',function(){
+            //option的val()是它的value属性(我把value属性设置成对应表格数据中的id)
+            var val = $(this).val();
+            switch(val){
+                case '1':
+                    $(".Answercontent").css("display","block");
+                    $(".Answerpart .Answerpart_left input").attr("type","radio");
+                    $(".Answercontent").removeAttr("hidden");
+                    break;
+                case '2':
+                    $(".Answercontent").css("display","block");
+                    $(".Answerpart .Answerpart_left input").attr("type","checkbox");
+                    $(".Answercontent").removeAttr("hidden");
+                    break;
+                case '3':
+                    $('.Answeroptions').filter(':visible').remove();
+                    break;
+                case '4':
+                    $('.Answeroptions .Answercontent').filter(':visible').remove();
+                    var div = '<div style="width:569px;height:200px;border:1px solid #ccc;">选项：</div>';
+                    $(".Answeroptions").append(div);
+                    break;
+                default:
+            }
+        })
+        
+        //把写好的数据内容提交到后台,提交事件
+        $('form[name=subjectAddForm]').off('submit');
+        $('form[name=subjectAddForm]').on('submit',function(){
+            //获取4个id
+            var type = $('select[name=type]').val();
+            var topic = $('select[name=topic]').val();
+            var level = $('select[name=level]').val();
+            var department = $('select[name=department]').val();
+            // console.log(type,department,level,topic);
+
+            var choiceContents = new Array();
+            $("textarea[name='choiceContent']").each(function(index,item){
+                choiceContents[index]=$(item).val();
+            })
+            // var checkState = '未审核';
+            var analysis = $('textarea[name=analysis]').val();
+            var stem = $('textarea[name=stem]').val();       
+
+            var choiceCorrects = new Array();
+            if(type==1){
+                $(':radio[name=answer]').each(function(index,item){
+                    choiceCorrects[index] = +$(item).prop('checked');
+                })
+            }else{
+                $(':checkbox[name=answer]').each(function(index,item){
+                    choiceCorrects[index] = +$(item).prop('checked');
+                })
+            }    
+            var answer = $('textarea[name=answer]').val();
+            // console.log(choiceContents,analysis,stem,answer,choiceCorrects);
+            
+            $.ajax({
+                'url':'http://localhost:3000/exam/manager/addSubject',
+                'data':{
+                    'analysis':analysis,    // 'answer':answer,
+                    'choiceContents':JSON.stringify(choiceContents),
+                    'checkState':'未审核',
+                    'stem':stem,
+                    'department_id':department,
+                    'subjectLevel_id':level,
+                    'subjectType_id':type,
+                    'topic_id':topic
+                },
+                'method':'POST',
+                'content-Type':'application/json',
+                success:function(){
+                    console.log('success');
+                }
+            })
+            //拿到四个选项，遍历它们
+            //拿到每一个选项的checked选中的值和内容，
+            //把拿到的数据发送到后台插入表中
+
+            // $('textarea[name=choiceContent]').each(function(index,item){
+            //     var choiceContent = $(item).val();
+            //     var choiceCorrect;
+                
+            // })
+
+            return false;
+        });
+
+        //保存并继续
+        $(".saveContinue").off("click");
+        $(".saveContinue").on("click",function(){
+            $("form[name='subjectAddForm']").trigger("submit");
+        });
+        //保存并关闭
+        $(".saveClose").off("click");
+        $(".saveClose").on("click",function(){
+            $(".deletetitle").trigger("submit");
+        })                  
+    })
+</script>

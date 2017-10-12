@@ -64,4 +64,49 @@ route.get('/showOptions',(req,resp)=>{
 	});
 });
 
+route.get('/deleteSubject',(req,resp)=>{
+	examDB.deleteSubject(req.query.id).then((data)=>{
+		resp.send(data);
+	}).catch((error)=>{
+		resp.send(error);
+	});
+});
+
+route.post('/addSubject',(req,resp)=>{
+	var ana = req.body.analysis;//涉及的知识点 analysis
+	var choiceContents = req.body.choiceContents;
+	choiceContents = JSON.parse(choiceContents);
+	// var anw = req.body.anwser;
+	var stem = req.body.stem;
+	var checkState = req.body.checkState;
+	var did = +req.body.department_id;
+	var sid = +req.body.subjectLevel_id;
+	var tid = +req.body.subjectType_id;
+	var cid = +req.body.topic_id;
+	// console.log(ana,choiceContents,checkState,stem,did,sid,tid,cid);
+	showSubDB.addSubject(ana,choiceContents,checkState,stem,did,sid,tid,cid).then((data)=>{
+		resp.send(data);
+	}).catch((error)=>{
+		resp.send(error);
+	})
+})
+
+route.post('/addChoice',(req,resp)=>{
+	var choiceContent = req.body.choiceContent;
+	var choiceCorrect = req.body.choiceCorrect;
+	showSubDB.addChoice(choiceContent,choiceCorrect).then((data)=>{
+		resp.send(data);
+	}).catch((error)=>{
+		resp.send(error);
+	})
+})
+
+route.post('/findById',(req,resp)=>{
+	var id = req.body.id;
+	showSubDB.addChoice(id).then((data)=>{
+		resp.send(data);
+	}).catch((error)=>{
+		resp.send(error);
+	})
+})
 module.exports=route;

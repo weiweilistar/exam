@@ -199,6 +199,9 @@
             'method':'POST',
             success:function(){
               alert('审核通过');
+              //点击审核，加入试卷
+              $(".Catalogcontentdown").find("a").hide();
+              $(".Catalogcontentdown").find("a:eq(3)").show();
             }
           });
           break;
@@ -216,9 +219,9 @@
           });
           break;
         case "删除题目":
-          $.ajax('',{
+          $.ajax('http://localhost:3000/exam/manager/deleteSubject',{
             'data':{
-
+              id:$(this).attr("id"),
             },
             'conntent-Type':'application/json',
             'method':'',
@@ -276,6 +279,17 @@
 
     });
 
+    //模糊查询
+    // $(".pl15").on('click',function(){
+    //   alert()
+    //   var key=$(".pl5").val();
+    //   $.getJSON('exam/manager/query/'+key,function(data){
+    //   showData(data);
+    // })
+    // });
+    
+
+    
  
 
   })
