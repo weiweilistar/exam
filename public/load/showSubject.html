@@ -44,6 +44,9 @@
                     <div class="Catalogtitwo">题号：25544&nbsp;&nbsp;题型：还是得&nbsp;&nbsp;难度：订餐&nbsp;&nbsp;上传人：女性司机&nbsp;&nbsp;来源：才能使得&nbsp;&nbsp;上传时间:220255&nbsp;&nbsp;组卷次数：<em>0</em></div>
                     <div class="Catalogcontent">
                         <div class="Catalogcontentup">题型</div>
+                        <!-- 添加解析 -->
+                        <div class="analysis"></div>
+
                         <div class="Catalogcontentdown">
                           <a href="#">审核通过</a>
                           <a href="#">审核不通过</a>
@@ -69,6 +72,11 @@
 </div>
 <script>
   $(function(){
+      //----点击跳转页面－－－－
+      $(".icon_r").off('click');
+      $(".icon_r").on('click',function(){
+        $(".right").load('/load/addSubject.html');
+      })
       $.getJSON("exam/manager/getAllSubjectType",function(data){
       // console.log(data);
       var tr=$(".tablea tr:hidden").clone();
@@ -181,6 +189,22 @@
             $(".Catalogcontentup p.1").attr('style','color:red');
           });
         });
+
+        // －－－－显示答案和解析－－－－－－－－－
+        var analysis = '<div class="parent" hidden="hidden" style="margin-top:10px;">'+item.analysis+'</div>';
+
+        div.find('.analysis').append(analysis);
+        //点击显示答案和解析时，显示；不点击时隐藏
+        $('.Catalogtitle input:checkbox').on('click',function(){
+          var isCheck = $(this).prop('checked');
+          // console.log(isCheck);//当点击选中时为true,没有被选中时为false
+          if(isCheck){
+            $('.parent').show();
+          }else{
+            $('.parent').hide();
+          }
+        })
+
       });
     }
 
@@ -280,13 +304,13 @@
     });
 
     //模糊查询
-    // $(".pl15").on('click',function(){
-    //   alert()
-    //   var key=$(".pl5").val();
-    //   $.getJSON('exam/manager/query/'+key,function(data){
-    //   showData(data);
-    // })
-    // });
+    $(".pl15").on('click',function(){
+      var key=$(".pl5 input").val();
+      alert(key)
+      $.getJSON('exam/manager/query/'+key,function(data){
+        showData(data);
+     })
+    });
     
 
     

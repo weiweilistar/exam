@@ -72,7 +72,34 @@ route.get('/deleteSubject',(req,resp)=>{
 	});
 });
 
-route.post('/addSubject',(req,resp)=>{
+route.get('/query/:key',(req,resp)=>{
+	examDB.query(req.params.key).then((data)=>{
+		resp.send(data);
+	}).catch((error)=>{
+		resp.send(errror);
+	});
+});
+
+route.post('/saveSubject',(req,resp)=>{
+	var analysis=req.body.analysis;
+	var choiceContents=req.body.choiceContents;
+	//choiceContents
+	choiceContents=JSON.parse(choiceContents);
+	var stem=req.body.stem;
+	var checkState=req.body.checkState;
+	var did=+req.body.department_id;
+	var sid=+req.body.subjectLevel_id;
+	var tid=+req.body.subjectType_id;
+	var cid=+req.body.topic_id;
+	console.log(analysis,choiceContents,stem,checkState,did,sid,tid,cid);
+	examDB.saveSubject(analysis,choiceContents,stem,checkState,did,sid,tid,cid).then((data)=>{
+		resp.send(data);
+	}).catch((error)=>{
+		resp.send(error);
+	});
+});
+
+route.post('/saveSubject',(req,resp)=>{
 	var ana = req.body.analysis;//涉及的知识点 analysis
 	var choiceContents = req.body.choiceContents;
 	choiceContents = JSON.parse(choiceContents);
@@ -84,14 +111,14 @@ route.post('/addSubject',(req,resp)=>{
 	var tid = +req.body.subjectType_id;
 	var cid = +req.body.topic_id;
 	// console.log(ana,choiceContents,checkState,stem,did,sid,tid,cid);
-	showSubDB.addSubject(ana,choiceContents,checkState,stem,did,sid,tid,cid).then((data)=>{
+	examDB.addSubject(ana,choiceContents,checkState,stem,did,sid,tid,cid).then((data)=>{
 		resp.send(data);
 	}).catch((error)=>{
 		resp.send(error);
 	})
 })
 
-route.post('/addChoice',(req,resp)=>{
+/*route.post('/addChoice',(req,resp)=>{
 	var choiceContent = req.body.choiceContent;
 	var choiceCorrect = req.body.choiceCorrect;
 	showSubDB.addChoice(choiceContent,choiceCorrect).then((data)=>{
@@ -108,5 +135,5 @@ route.post('/findById',(req,resp)=>{
 	}).catch((error)=>{
 		resp.send(error);
 	})
-})
+})*/
 module.exports=route;

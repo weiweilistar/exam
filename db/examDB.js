@@ -42,8 +42,21 @@ module.exports={
 		var sql="select * from tbl_exam_subject where stem like '%"+key+"%'";
 		return pool.execute(sql)
 	},
+	/*savaSubject(analysis,choiceContents,checkState,stem,department_id,subjectLevel_id,subjectType_id,topic_id){
+		//toString()是
+		var sql="insert into tbl_exam_subject values(null,'"
+		+analysis+"','"
+		+choiceContents.join()+"','"
+		+checkState+"','"
+		+stem+"',null,"
+		+department_id+","
+		+subjectLevel_id+","
+		+subjectType_id+","
+		+topic_id+",null)";
+		return pool.execute(sql);
+	}*/
 	//7.插入题目
-	addSubject(analysis,choiceContents,checkState,stem,department_id,subjectLevel_id,subjectType_id,topic_id){
+	saveSubject(analysis,choiceContents,checkState,stem,department_id,subjectLevel_id,subjectType_id,topic_id){
 		var sql = "insert into tbl_exam_subject values(null,'"+analysis+"','"+choiceContents.join()+"','"+checkState+"','"+stem+"',null,"+department_id+","+subjectLevel_id+","+subjectType_id+","+topic_id+",null)";
 		return pool.execute(sql);
 	},	//8.插入选项

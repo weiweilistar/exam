@@ -125,6 +125,12 @@
 
 <script type="text/javascript">
     $(function(){
+        //1.-------点击差号的时候回到showsubject页面-------------
+        $(".deletetitle").off('click');
+        $(".deletetitle").on('click',function(){
+            $(".right").load('/load/showSubject.html');
+        });
+        //2.-------选项卡从后台拿数据－－－－－－－－－－－
         //拿题型
         $.getJSON('exam/manager/getAllSubjectType',function(data){
             $("select:eq(0)").empty();
@@ -158,7 +164,111 @@
             });
         });
 
-        $('.Attributecontent_left select[class = type]').off('change');
+        //3.－－－－－－－给题型绑定事件，点击单选，多选，简答时不同－－－－－－－－－－－
+        $(".Attributecontent_left select[name='type']").off('change');
+        $(".Attributecontent_left select[name='type']").on('change',function(event){
+            // 拿到单选或复选或简答的ｉｄ
+            var sid=$(this).val();
+            //console.log(sid);
+            switch(sid){
+                //单选
+                case '1':
+                    //console.log('1');测试１是否是字符串
+                    $(".Answercontent").show();
+                    $(".Answercontent").find("input").attr("type","radio");
+                    break;
+                //复选
+                case '2':
+                    $(".Answercontent").show();
+                    $(".Answercontent").find("input").attr("type","checkbox");
+                    break;
+                //简答
+                case '3':
+                    $(".chapterAnswer").show();
+                    $(".Answercontent").hide();
+                    break;
+            }
+        });
+        
+        //4.－－－－－将写好的数据提交给后台－－－－－－－
+        $("form[name='subjectAddForm']").off('submit');
+        $("form[name='subjectAddForm']").on('submit',function(){
+            var type=$("select[name='type']").val();
+            var department=$("select[name='department']").val();
+            var level=$("select[name='level']").val();
+            var topic=$("select[name='topic']").val();
+            var analysis=$("textarea[name='analysis']").val();
+            var stem=$(".Attributetit　textarea[name='stem']").val();
+            var choiceContents=new Array();
+            $("textarea[name='choiceContent']").each(function(index,item){
+                 choiceContents[index]=$(item).val();
+            });
+            var correntChoices=new Array();
+
+            //此时的type是变量，是ｉｄ
+            if(type=1){
+                $(":radio[name='answer']").each(function(index,item){
+                    correntChoices[index]=+$(item).prop("checked");
+                });
+            }else if(type=2){ 
+                $(":checkbox[name='answer']").each(function(index,item){
+                    correntChoices[index]=+$(item).prop("checked");
+                });    
+            }
+
+            $.ajax({
+                'url':'http://localhost:3000/exam/manager/saveSubject',
+                'data':{
+                    'analysis':analysis,    // 'answer':answer,
+                    'choiceContents':JSON.stringify(choiceContents),
+                    'checkState':'未审核',
+                    'stem':stem,
+                    'department_id':department,
+                    'subjectLevel_id':level,
+                    'subjectType_id':type,
+                    'topic_id':topic
+                },
+                'method':'POST',
+                'content-Type':'application/json',
+                success:function(){
+                    console.log('success');
+                }
+            })
+
+            // $.ajax('exam/manager/saveSubject',{
+            //     'method':'POST',
+            //     'data':{
+            //         'analysis':analysis,
+            //         'choiceContents':JSON.stringify(choiceContents),
+            //         'checkState':'未审核',
+            //         'stem':stem,
+            //         'department_id':department，
+            //         'subjectLevel_id':level,
+            //         'subjectType_id':type,
+            //         'topic_id':topic
+            //     },
+            //     'content-Type':'application/json',
+            //     success:function(){
+            //         console.log('success');
+            //     }
+            // });
+
+        });
+
+
+        //保存并继续
+        $(".saveContinue").off("click");
+        $(".saveContinue").on("click",function(){
+            $("form[name='subjectAddForm']").trigger("submit");
+        });
+
+        //保存并关闭
+        $(".saveClose").off("click");
+        $(".saveClose").on("click",function(){
+            $(".deletetitle").trigger("submit");
+        })
+
+/*        $('.Attributecontent_left select[class = type]').off('change');
         $('.Attributecontent_left select[class = type]').on('change',function(){
             //option的val()是它的value属性(我把value属性设置成对应表格数据中的id)
             var val = $(this).val();
@@ -256,6 +366,6 @@
         $(".saveClose").off("click");
         $(".saveClose").on("click",function(){
             $(".deletetitle").trigger("submit");
-        })                  
-    })
+        })*/                  
+    });
 </script>
