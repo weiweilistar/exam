@@ -56,15 +56,7 @@
 
                     </div>
                </div>
-              <!--  <div class="Catalog_rightnei" hidden="hidden">
-                    <div class="Catalogtitwo">题号：25544&nbsp;&nbsp;题型：还是得&nbsp;&nbsp;难度：订餐&nbsp;&nbsp;上传人：女性司机&nbsp;&nbsp;来源：才能使得&nbsp;&nbsp;上传时间:220255&nbsp;&nbsp;组卷次数：<em>0</em></div>
-                    <div class="Catalogcontent">
-                      <div class="Catalogcontentup">题型</div>
-                      <div class="Catalogcontentdown">
-                        <a href="#">加入试卷</a>
-                      </div>
-                    </div>
-               </div> -->
+              
            </div>
            <div class="clear"></div>
       </div>
@@ -155,7 +147,6 @@
         div.removeAttr("hidden");
         
         $(".Catalog_right").append(div);
-        // div.find(".Catalogtitwo").html("题号:&nbsp;&nbsp;题型:"+item.subjectType.realName+"&nbsp;&nbsp;难度:"+item.subjectLevel.realName+"&nbsp;&nbsp;上传人:"+item.user+"&nbsp;&nbsp;来源:"+null+"&nbsp;&nbsp;上传时间:"+item.uploadTime+"&nbsp;&nbsp;组卷次数:<em>0</em>");//
         var stemOne=$("<p>"+item.stem+"</p>");
         div.find('.Catalogcontentdown a').attr('id',item.id);
         div.find(".Catalogcontentup").append(stemOne);
@@ -191,7 +182,7 @@
         });
 
         // －－－－显示答案和解析－－－－－－－－－
-        var analysis = '<div class="parent" hidden="hidden" style="margin-top:10px;">'+item.analysis+'</div>';
+        var analysis = '<div class="parent" hidden="hidden" style="margin-top:10px;color:red;">'+item.analysis+'</div>';
 
         div.find('.analysis').append(analysis);
         //点击显示答案和解析时，显示；不点击时隐藏
@@ -248,11 +239,13 @@
               id:$(this).attr("id"),
             },
             'conntent-Type':'application/json',
-            'method':'',
+            'method':'post',
             success:function(){
               alert('删除成功');
             }
           })
+          $(".baseUI li ul:eq(0) li:eq(0)").trigger('click');
+            break;
       }
     })
     }

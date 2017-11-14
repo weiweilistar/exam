@@ -34,7 +34,7 @@ module.exports={
 		return pool.execute(sql);
 	},
 	deleteSubject(id){
-		var sql="delete * from tbl_exam_subject where id="+id;
+		var sql="delete from tbl_exam_subject where id="+id;
 		return pool.execute(sql);
 	},
 	//模糊查询
@@ -42,26 +42,16 @@ module.exports={
 		var sql="select * from tbl_exam_subject where stem like '%"+key+"%'";
 		return pool.execute(sql)
 	},
-	/*savaSubject(analysis,choiceContents,checkState,stem,department_id,subjectLevel_id,subjectType_id,topic_id){
-		//toString()是
-		var sql="insert into tbl_exam_subject values(null,'"
-		+analysis+"','"
-		+choiceContents.join()+"','"
-		+checkState+"','"
-		+stem+"',null,"
-		+department_id+","
-		+subjectLevel_id+","
-		+subjectType_id+","
-		+topic_id+",null)";
-		return pool.execute(sql);
-	}*/
+	
 	//7.插入题目
 	saveSubject(analysis,choiceContents,checkState,stem,department_id,subjectLevel_id,subjectType_id,topic_id){
 		var sql = "insert into tbl_exam_subject values(null,'"+analysis+"','"+choiceContents.join()+"','"+checkState+"','"+stem+"',null,"+department_id+","+subjectLevel_id+","+subjectType_id+","+topic_id+",null)";
 		return pool.execute(sql);
-	},	//8.插入选项
-	addChoice(choiceContent,choiceCorrect){
-		var sql = 'insert into tbl_exam_choice values(null,"'+choiceContent+'","'+choiceCorrect+'",null)';
+	},	
+	//8.插入选项
+	addChoice(choiceContent,choiceCorrect,id){
+		var sql = 'insert into tbl_exam_choice values(null,"'+choiceContent+'",'+choiceCorrect+','+id+')';		
 		return pool.execute(sql);
 	}
+	
 }

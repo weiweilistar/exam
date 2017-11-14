@@ -6,7 +6,7 @@
 </style>
 		<!--题目添加-->
 <div class="editingarea">
-    <form action="" method="post" name="subjectAddForm">
+    <form action="javascript:void(0)" method="post" name="subjectAddForm">
         <div class="c_flex"><span class="c_flexible"></span></div>
         <div class="chosetitle"><a href="#" class="deletetitle">删除</a></div>
         
@@ -40,7 +40,7 @@
             <div class="Problem">
                 <div class="Attributetit">题目题干</div>
                 <div>
-                    <textarea name="stem" cols="80" rows="4"></textarea>                              
+                    <textarea name="stem" cols="80" rows="4" class="Problemstem"></textarea>                              
                 </div>
             </div>
             <div class="Answeroptions">
@@ -109,12 +109,7 @@
                 	<textarea name="analysis"></textarea> 
                 </div>
             </div>
-            <!--
-            <div class="Problem">
-                <div class="fistproblm"><span>1.</span><a href="#"></a></div>
-                <div class="Problemcontent"></div>
-            </div>
-            -->
+            
             <div class="btn_left">
                 <span class="btnL"><em class="btnR saveContinue">保存并继续</em></span>
                 <span class="btnL"><em class="btnR saveClose">保存并关闭</em></span>
@@ -169,7 +164,7 @@
         $(".Attributecontent_left select[name='type']").on('change',function(event){
             // 拿到单选或复选或简答的ｉｄ
             var sid=$(this).val();
-            //console.log(sid);
+            console.log(sid);
             switch(sid){
                 //单选
                 case '1':
@@ -187,34 +182,40 @@
                     $(".chapterAnswer").show();
                     $(".Answercontent").hide();
                     break;
+
             }
         });
         
         //4.－－－－－将写好的数据提交给后台－－－－－－－
+        //属性选择器，属性名、属性值，单引号可加可不加
+        //jQuery( "[attribute|='value']" ),value: 一个属性值，引号是可选的. 可以是一个 有效标识符或带一个引号的字符串
         $("form[name='subjectAddForm']").off('submit');
         $("form[name='subjectAddForm']").on('submit',function(){
             var type=$("select[name='type']").val();
+            console.log(type)
             var department=$("select[name='department']").val();
             var level=$("select[name='level']").val();
             var topic=$("select[name='topic']").val();
+
+            console.log(type,department,level,topic)
             var analysis=$("textarea[name='analysis']").val();
-            var stem=$(".Attributetit　textarea[name='stem']").val();
+            var stem=$("textarea[name='stem']").val();
+            // console.log(stem);
             var choiceContents=new Array();
             $("textarea[name='choiceContent']").each(function(index,item){
                  choiceContents[index]=$(item).val();
             });
-            var correntChoices=new Array();
-
-            //此时的type是变量，是ｉｄ
-            if(type=1){
-                $(":radio[name='answer']").each(function(index,item){
-                    correntChoices[index]=+$(item).prop("checked");
-                });
-            }else if(type=2){ 
-                $(":checkbox[name='answer']").each(function(index,item){
-                    correntChoices[index]=+$(item).prop("checked");
-                });    
-            }
+            var choiceCorrects = new Array();
+            if(type==1){
+                $(':radio[name=answer]').each(function(index,item){
+                    //一元加运算符　用于把布尔值转换为数值
+                    choiceCorrects[index] = +$(item).prop('checked');
+                })
+            }else{
+                $(':checkbox[name=answer]').each(function(index,item){
+                    choiceCorrects[index] = +$(item).prop('checked');
+                })
+            }    
 
             $.ajax({
                 'url':'http://localhost:3000/exam/manager/saveSubject',
@@ -230,142 +231,67 @@
                 },
                 'method':'POST',
                 'content-Type':'application/json',
-                success:function(){
-                    console.log('success');
+                success:function(data){
+                    var id = data.insertId;
+                    //返回成功后有insertId
+                    console.log(id);
+                    $.ajax({
+                        'url':'http://localhost:3000/exam/manager/addChoice',
+                        'data':{
+                            'id':id,  
+                            'choiceContents':JSON.stringify(choiceContents),  
+                            'choiceCorrects':JSON.stringify(choiceCorrects)
+                        },
+                        'method':'POST',
+                        'content-Type':'application/json',
+                        success:function(data){
+                            console.log(data);
+                        }
+                    })
                 }
             })
 
-            // $.ajax('exam/manager/saveSubject',{
-            //     'method':'POST',
-            //     'data':{
-            //         'analysis':analysis,
-            //         'choiceContents':JSON.stringify(choiceContents),
-            //         'checkState':'未审核',
-            //         'stem':stem,
-            //         'department_id':department，
-            //         'subjectLevel_id':level,
-            //         'subjectType_id':type,
-            //         'topic_id':topic
-            //     },
-            //     'content-Type':'application/json',
-            //     success:function(){
-            //         console.log('success');
-            //     }
-            // });
-
-        });
-
-
-        //保存并继续
-        $(".saveContinue").off("click");
-        $(".saveContinue").on("click",function(){
-            $("form[name='subjectAddForm']").trigger("submit");
-        });
-
-        //保存并关闭
-        $(".saveClose").off("click");
-        $(".saveClose").on("click",function(){
-            $(".deletetitle").trigger("submit");
-        })
-
-/*        $('.Attributecontent_left select[class = type]').off('change');
-        $('.Attributecontent_left select[class = type]').on('change',function(){
-            //option的val()是它的value属性(我把value属性设置成对应表格数据中的id)
-            var val = $(this).val();
-            switch(val){
-                case '1':
-                    $(".Answercontent").css("display","block");
-                    $(".Answerpart .Answerpart_left input").attr("type","radio");
-                    $(".Answercontent").removeAttr("hidden");
-                    break;
-                case '2':
-                    $(".Answercontent").css("display","block");
-                    $(".Answerpart .Answerpart_left input").attr("type","checkbox");
-                    $(".Answercontent").removeAttr("hidden");
-                    break;
-                case '3':
-                    $('.Answeroptions').filter(':visible').remove();
-                    break;
-                case '4':
-                    $('.Answeroptions .Answercontent').filter(':visible').remove();
-                    var div = '<div style="width:569px;height:200px;border:1px solid #ccc;">选项：</div>';
-                    $(".Answeroptions").append(div);
-                    break;
-                default:
-            }
-        })
-        
-        //把写好的数据内容提交到后台,提交事件
-        $('form[name=subjectAddForm]').off('submit');
-        $('form[name=subjectAddForm]').on('submit',function(){
-            //获取4个id
-            var type = $('select[name=type]').val();
-            var topic = $('select[name=topic]').val();
-            var level = $('select[name=level]').val();
-            var department = $('select[name=department]').val();
-            // console.log(type,department,level,topic);
-
-            var choiceContents = new Array();
-            $("textarea[name='choiceContent']").each(function(index,item){
-                choiceContents[index]=$(item).val();
-            })
-            // var checkState = '未审核';
-            var analysis = $('textarea[name=analysis]').val();
-            var stem = $('textarea[name=stem]').val();       
-
-            var choiceCorrects = new Array();
-            if(type==1){
-                $(':radio[name=answer]').each(function(index,item){
-                    choiceCorrects[index] = +$(item).prop('checked');
-                })
-            }else{
-                $(':checkbox[name=answer]').each(function(index,item){
-                    choiceCorrects[index] = +$(item).prop('checked');
-                })
-            }    
-            var answer = $('textarea[name=answer]').val();
-            // console.log(choiceContents,analysis,stem,answer,choiceCorrects);
-            
-            $.ajax({
-                'url':'http://localhost:3000/exam/manager/addSubject',
+            /*$.ajax('exam/manager/saveSubject',{
+                'method':'POST',
                 'data':{
-                    'analysis':analysis,    // 'answer':answer,
+                    'analysis':analysis,
                     'choiceContents':JSON.stringify(choiceContents),
                     'checkState':'未审核',
                     'stem':stem,
-                    'department_id':department,
+                    'department_id':department，
                     'subjectLevel_id':level,
                     'subjectType_id':type,
                     'topic_id':topic
                 },
-                'method':'POST',
                 'content-Type':'application/json',
                 success:function(){
                     console.log('success');
                 }
-            })
-            //拿到四个选项，遍历它们
-            //拿到每一个选项的checked选中的值和内容，
-            //把拿到的数据发送到后台插入表中
-
-            // $('textarea[name=choiceContent]').each(function(index,item){
-            //     var choiceContent = $(item).val();
-            //     var choiceCorrect;
-                
-            // })
-
+            })；
+            因为此方法中包含数组，ajax中只能包含一个参数
+            */
             return false;
         });
+
 
         //保存并继续
         $(".saveContinue").off("click");
         $(".saveContinue").on("click",function(){
             $("form[name='subjectAddForm']").trigger("submit");
+            $(".Problemcontent").empty(); 
+            $(".Answerpart_right").empty();
+            $(".Problemstem").val("");
+            $("[type=radio]:checked").removeAttr("checked");
         });
+
         //保存并关闭
         $(".saveClose").off("click");
         $(".saveClose").on("click",function(){
             $(".deletetitle").trigger("submit");
-        })*/                  
+            $("form[name='subjectAddForm']").load('load/showSubject.html');
+
+        })
+
+             
     });
 </script>
